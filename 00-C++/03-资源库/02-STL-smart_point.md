@@ -267,7 +267,7 @@ public:
 
 ```
 
-因为this->ob_rectangle = std::make_unique<Box::rectangle>();调用了rectangle类的构造函数。
+因为this->ob_rectangle = std::make_unique<<Box::rectangle>>();调用了rectangle类的构造函数。
 
 
 
