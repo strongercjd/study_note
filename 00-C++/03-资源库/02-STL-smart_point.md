@@ -20,7 +20,7 @@ RAII（Resource Acquisition Is Initialization）是一种利用对象生命周�
 
 使用RAII思想设计的SmartPtr类
 
-```
+``` cpp
 template<class T>
 class SmartPtr
 {
@@ -41,7 +41,7 @@ class SmartPtr
 
 上述的SmartPtr还不能将其称为智能指针，因为它还不具有指针的行为。指针可以解引用，也可以通过->去访问所指空间中的内容，因此：AutoPtr模板类中还得需要将* 、->重载下，才可让其像指针一样去使用
 
-```
+``` cpp
 template<class T>
 class SmartPtr
 {
@@ -92,7 +92,7 @@ int main()
 
 运行结果
 
-```
+``` cpp
 10
 3:3
 ```
@@ -126,7 +126,7 @@ make_unique()是C++14引入的功能，但是可以广泛使用。
 
 先定义int型的智能指针length，在给智能指针分配空间时赋值12
 
-```
+``` cpp
 #include <iostream>
 #include <memory>
 
@@ -151,7 +151,7 @@ int main()
 
 也可以先定义时针，再申请内存，再赋值。
 
-```
+``` cpp
 //第一种写法
 Box1.length = std::make_unique<int>();
 *(Box1.length) = 10;
@@ -164,7 +164,7 @@ Box1.length.reset(new int());
 
 智能指针-**数组**
 
-```
+``` cpp
 #include <iostream>
 #include <memory>
 
@@ -190,14 +190,14 @@ int main()
 
 定义指针时，直接初始化
 
-```
+``` cpp
 std::unique_ptr<int[]> length{new int[5]{1, 2, 3, 4, 5}};
 
 ```
 
 错误写法
 
-```
+``` cpp
 unique_ptr<int[10]> ar_up(new int[10]); // 无法编译
 unique_ptr<int> ar_up(new int[10]); // 编译没有问题，但是运行时可能会出错 
 
@@ -205,7 +205,7 @@ unique_ptr<int> ar_up(new int[10]); // 编译没有问题，但是运行时可�
 
 智能指针-**类**
 
-```
+``` cpp
 #include <iostream>
 #include <memory>
 
@@ -243,19 +243,18 @@ int main()
 
  运行结果
 
-```
+``` cpp
 [chenjindou@manjaro C++]$ ./demo
 Box Constructor
 rectangle Constructor
 main
-
 ```
 
 这个**说明**：使用make_unique给ob_rectangle申请内存时，会实例化rectangle这里，也就会打印rectangle Constructor。
 
 **注意：**下面这个rectangle类的构造函数必须使用public
 
-```
+``` cpp
 class Box::rectangle
 {
 public:
@@ -273,7 +272,7 @@ public:
 
 **所有权的变化** 
 
-```
+``` cpp
 // 所有权的变化 
 unique_ptr<int> u_i2(new int(4));//创建时指定动态对象
 int *p_i = u_i2.release();	//释放所有权  
@@ -293,11 +292,10 @@ auto_ptr 从 C++98 使用至今，为何从 C++11 开始，引入 unique_ptr 来
 （1）基于安全考虑。
 先来看下面的赋值语句:
 
-```
+``` cpp
 auto_ptr< string> ps (new string ("I reigned lonely as a cloud.”）;
 auto_ptr<string> vocation; 
 vocaticn = ps;
-
 ```
 
 上述赋值语句将完成什么工作呢？如果 ps 和 vocation 是常规指针，则两个指针将指向同一个 string 对象。这是不能接受的，因为程序将试图删除同一个对象两次，一次是 ps 过期时，另一次是 vocation 过期时。要避免这种问题，方法有多种：
@@ -310,7 +308,7 @@ vocaticn = ps;
 
 下面举个例子来说明。
 
-```
+``` cpp
 #include <iostream>
 #include <string>
 #include <memory>
@@ -343,7 +341,7 @@ int main() {
 
 使用 unique_ptr 时编译出错，与 auto_ptr 一样，unique_ptr 也采用所有权模型，但在使用 unique_ptr 时，程序不会等到运行阶段崩溃，而在编译期因下述代码行出现错误：
 
-```
+``` cpp
 unique_ptr<string> pwin;
 pwin = films[2]; 					// films[2] loses ownership
 
@@ -353,7 +351,7 @@ pwin = films[2]; 					// films[2] loses ownership
 
 从上面可见，unique_ptr 比 auto_ptr 更加安全，因为 auto_ptr 有拷贝语义，拷贝后原对象变得无效，再次访问原对象时会导致程序崩溃；unique_ptr 则禁止了拷贝语义，但提供了移动语义，即可以使用 std::move() 进行控制权限的转移，如下代码所示：
 
-```
+``` cpp
 unique_ptr<string> upt(new string("lvlv"));
 unique_ptr<string> upt1(upt);	//编译出错，已禁止拷贝
 unique_ptr<string> upt1=upt;	//编译出错，已禁止拷贝
@@ -367,7 +365,7 @@ auto_ptr<string> apt1=apt;	//编译通过
 
 这里要注意，在使用 std::move 将 unique_ptr 的控制权限转移后，不能够再通过 unique_ptr 来访问和控制资源了，否则同样会出现程序崩溃。我们可以在使用 unique_ptr 访问资源前，使用成员函数 get() 进行判空操作。
 
-```
+``` cpp
 unique_ptr<string> upt1=std::move(upt);	// 控制权限转移
 if(upt.get()!=nullptr) {				// 判空操作更安全
 	// do something
@@ -378,7 +376,7 @@ if(upt.get()!=nullptr) {				// 判空操作更安全
 2）unique_ptr 不仅安全，而且灵活。
 如果 unique_ptr 是个临时右值，编译器允许拷贝语义。参考如下代码：
 
-```
+``` cpp
 unique_ptr<string> demo(const char* s) {
     unique_ptr<string> temp (new string(s))； 
     return temp；
@@ -386,7 +384,6 @@ unique_ptr<string> demo(const char* s) {
 // 假设编写了如下代码
 unique_ptr<string> ps;
 ps = demo('Uniquely special")；
-
 ```
 
 demo() 返回一个临时 unique_ptr，然后 ps 接管了临时对象 unique_ptr 所管理的资源，而返回时临时的 unique_ptr 被销毁，也就是说没有机会使用 unique_ptr 来访问无效的数据，换句话来说，这种赋值是不会出现任何问题的，即没有理由禁止这种赋值。实际上，编译器确实允许这种赋值。相对于 auto_ptr 任何情况下都允许拷贝语义，这正是 unique_ptr 更加灵活聪明的地方。
@@ -395,33 +392,30 @@ demo() 返回一个临时 unique_ptr，然后 ps 接管了临时对象 unique_pt
 
 unique_ptr 可放在容器中，弥补了 auto_ptr 不能作为容器元素的缺点。
 
-```
+``` cpp
 // 方式一
 vector<unique_ptr<string>> vs { new string{“Doug”}, new string{“Adams”} };  
 
 // 方式二
 vector<unique_ptr<string>>v;  
 unique_ptr<string> p1(new string("abc"));  
-
 ```
 
 管理动态数组，因为 unique_ptr 有 unique_ptr<X[]> 重载版本，销毁动态对象时调用 delete[]。
 
-```
+``` cpp
 unique_ptr<int[]> p (new int[3]{1,2,3});  
 p[0] = 0;// 重载了operator[]
-
 ```
 
 自定义资源删除操作（Deleter）。unique_ptr 默认的资源删除操作是 delete/delete[]，若需要可以进行自定义。
 
-```
+``` cpp
 // 资源清理函数
 void end_connection(connection *p) { disconnect(*p); }
 
 // 资源清理器的类型
 unique_ptr<connection, decltype(end_connection)*> p(&c, end_connection);// 传入函数名，会自动转换为函数指针
-
 ```
 
 综上所述，基于 unique_ptr 的安全性和扩充的功能，unique_ptr 成功的将 auto_ptr 取而代之。
@@ -440,7 +434,7 @@ shared_ptr 是为了解决 auto_ptr 在对象所有权上的局限性（auto_ptr
 （1）基础对象类
 首先，我们来定义一个基础对象类 Point 类，为了方便后面我们验证智能指针是否有效，我们为 Point 类创建如下接口：
 
-```
+``` cpp
 class Point {
 private:
     int x, y;
@@ -451,13 +445,12 @@ public:
     void setX(int xVal) { x = xVal; }
     void setY(int yVal) { y = yVal; }
 };
-
 ```
 
 （2）辅助类
 在创建智能指针类之前，我们先创建一个辅助类。这个类的所有成员皆为私有类型，因为它不被普通用户所使用。为了只为智能指针使用，还需要把智能指针类声明为辅助类的友元。这个辅助类含有两个数据成员：计数 count 与基础对象指针。也即辅助类用以封装使用计数与基础对象指针。
 
-```
+``` cpp
 class RefPtr {
     private:
         friend class SmartPtr; 
@@ -467,7 +460,6 @@ class RefPtr {
         int count;
         Point *p; 
 };
-
 ```
 
 （3）为基础对象类实现智能指针类
@@ -479,7 +471,7 @@ class RefPtr {
 
 做好前面的准备后，我们可以为基础对象类 Point 书写一个智能指针类了。根据引用计数实现关键点，我们可以写出如下智能指针类：
 
-```
+``` cpp
 class SmartPtr {
 public:
 	//构造函数
@@ -520,13 +512,12 @@ Point& operator*() {
 private:
 	RefPtr* rp;
 };
-
 ```
 
 （4）智能指针类的使用与测试
 至此，我们的智能指针类就完成了，我们可以来看看如何使用。
 
-```
+``` cpp
 int main() {
     //定义一个基础对象类指针
     Point *pa = new Point(10, 20);
@@ -552,12 +543,11 @@ int main() {
     cout << pa->getX() << endl;
     return 0;
 }
-
 ```
 
 运行结果：
 
-```
+``` cpp
 sptr1:10,20
 in copy constructor
 sptr2:10,20
@@ -576,7 +566,7 @@ sptr3:10,20
 （5）对智能指针的改进
 目前这个智能指针只能用于管理 Point 类的基础对象，如果此时定义了个矩阵的基础对象类，那不是还得重新写一个属于矩阵类的智能指针类吗？但是矩阵类的智能指针类设计思想和 Poin t类一样啊，就不能借用吗？答案当然是能，那就是使用模板技术。为了使我们的智能指针适用于更多的基础对象类，我们有必要把智能指针类通过模板来实现。这里贴上上面智能指针类的模板版本：
 
-```
+``` cpp
 //模板类作为友元时要先有声明
 template <typename T> class SmartPtr;
 
@@ -639,12 +629,11 @@ public:
 private:
     RefPtr<T> *rp;  //辅助类对象指针
 };
-
 ```
 
 现在使用智能指针类模板来共享其它类型的基础对象，以 int 为例：
 
-```
+``` cpp
 int main() {
 	// 定义一个基础对象类指针
     int* ia = new int(10);
@@ -665,19 +654,17 @@ int main() {
     cout << *ia << endl;
     return 0;
 }
-
 ```
 
 测试结果如下：
 
-```
+``` cpp
 sptr1:10
 sptr2:10
 sptr3:5
 还有2个指针指向基础对象
 还有1个指针指向基础对象
 3968064
-
 ```
 
 # 4、weak_ptr
@@ -688,7 +675,7 @@ weak_ptr 被设计为与 shared_ptr 共同工作，可以从一个 shared_ptr �
 4.2 用法
 使用 weak_ptr 的成员函数 use_count() 可以观测资源的引用计数，另一个成员函数 expired() 的功能等价于 use_count()==0，但更快，表示被观测的资源（也就是 shared_ptr 管理的资源）已经不复存在。weak_ptr 可以使用一个非常重要的成员函数lock()从被观测的 shared_ptr 获得一个可用的 shared_ptr 管理的对象， 从而操作资源。但当 expired()==true 的时候，lock() 函数将返回一个存储空指针的 shared_ptr。总的来说，weak_ptr 的基本用法总结如下：
 
-```
+``` cpp
 weak_ptr<T> w;	 	//创建空 weak_ptr，可以指向类型为 T 的对象
 weak_ptr<T> w(sp);	//与 shared_ptr 指向相同的对象，shared_ptr 引用计数不变。T必须能转换为 sp 指向的类型
 w=p;				//p 可以是 shared_ptr 或 weak_ptr，赋值后 w 与 p 共享对象
@@ -696,12 +683,11 @@ w.reset();			//将 w 置空
 w.use_count();		//返回与 w 共享对象的 shared_ptr 的数量
 w.expired();		//若 w.use_count() 为 0，返回 true，否则返回 false
 w.lock();			//如果 expired() 为 true，返回一个空 shared_ptr，否则返回非空 shared_ptr
-
 ```
 
 下面是一个简单的使用示例：
 
-```
+``` cpp
 #include < assert.h>
 
 #include <iostream>
@@ -724,14 +710,12 @@ int main() {
 	cout << "int:" << *sp << endl;
     return 0;
 }
-
 ```
 
 程序输出：
 
-```
+``` cpp
 int：100
-
 ```
 
 从上面可以看到，尽管以 shared_ptr 来构造 weak_ptr，但是 weak_ptr 内部的引用计数并没有什么变化。
@@ -739,7 +723,7 @@ int：100
 4.3 作用
 现在要说的问题是，weak_ptr 到底有什么作用呢？从上面那个例子看来，似乎没有任何作用。其实 weak_ptr 可用于打破循环引用。引用计数是一种便利的内存管理机制，但它有一个很大的缺点，那就是不能管理循环引用的对象。一个简单的例子如下：
 
-```
+``` cpp
 #include <iostream>
 #include <memory>
 
@@ -785,7 +769,6 @@ int main(int argc, char** argv) {
     }  
     return 0;  
 }
-
 ```
 
 在 Man 类内部会引用一个 Woman，Woman 类内部也引用一个 Man。当一个 man 和一个 woman 是夫妻的时候，他们直接就存在了相互引用问题。man 内部有个用于管理wife生命期的 shared_ptr 变量，也就是说 wife 必定是在 husband 去世之后才能去世。同样的，woman 内部也有一个管理 husband 生命期的 shared_ptr 变量，也就是说 husband 必须在 wife 去世之后才能去世。这就是循环引用存在的问题：husband 的生命期由 wife 的生命期决定，wife 的生命期由 husband 的生命期决定，最后两人都死不掉，违反了自然规律，导致了内存泄漏。
@@ -816,7 +799,7 @@ weak_ptr 对象引用资源时不会增加引用计数，但是它能够通过 l
 STL 容器包含指针。很多 STL 算法都支持复制和赋值操作，这些操作可用于 shared_ptr，但不能用于 unique_ptr（编译器发出 warning）和 auto_ptr（行为不确定）。如果你的编译器没有提供 shared_ptr，可使用 Boost 库提供的 shared_ptr。
 （2）如果程序不需要多个指向同一个对象的指针，则可使用 unique_ptr。如果函数使用 new 分配内存，并返还指向该内存的指针，将其返回类型声明为 unique_ptr 是不错的选择。这样，所有权转让给接受返回值的 unique_ptr，而该智能指针将负责调用 delete。可将 unique_ptr 存储到 STL 容器中，只要对容器元素不使用拷贝操作的算法即可（如 sort()）。例如，可在程序中使用类似于下面的代码段。
 
-```
+``` cpp
 unique_ptr<int> make_int(int n) {
     return unique_ptr<int>(new int(n));
 }
@@ -835,14 +818,13 @@ int main() {
     for_each(vp.begin(), vp.end(), show);      // use for_each()
 	//...
 }
-
 ```
 
 其中 push_back 调用没有问题，因为它返回一个临时 unique_ptr，该 unique_ptr 被赋给 vp 中的一个 unique_ptr。另外，如果按值而不是按引用给 show() 传递对象，for_each() 将非法，因为这将导致使用一个来自 vp 的非临时 unique_ptr 初始化 pi，而这是不允许的。前面说过，编译器将发现错误使用 unique_ptr 的企图。
 
 在 unique_ptr 为右值时，可将其赋给 shared_ptr，这与将一个 unique_ptr 赋给另一个 unique_ptr 需要满足的条件相同，即 unique_ptr 必须是一个临时对象。与前面一样，在下面的代码中，make_int() 的返回类型为 
 
-```
+``` cpp
 unique_ptr<int>：
 
 unique_ptr<int> pup(make_int(rand() % 1000));		// ok

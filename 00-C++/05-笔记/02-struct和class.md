@@ -4,7 +4,7 @@
 
 C中的定义struct
 
-```
+``` cpp
 struct A
 {
 	int a;

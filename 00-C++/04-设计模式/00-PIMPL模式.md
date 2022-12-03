@@ -25,7 +25,7 @@ graph BT
 
 解决办法：
 
-```
+``` cpp
 //a.h
 #ifndef A_H
 #define A_H
@@ -50,7 +50,7 @@ private:
 
 使用前置声明(forward declaration)可以减少编译依赖，这个技巧告诉compile指向 class/struct的指针，而不用暴露struct/class的实现。在这里我们把原本的private成员封裝到struct A::Impl里，用一个不透明的指针(m_impl)指向他，auto_ptr是个smart pointer(from STL)，会在A class object销毁时连带将资源销毁还给系统。
 
-```
+``` cpp
 //a.cpp
 #include <stdio.h>
 #include "a.h"
@@ -98,7 +98,7 @@ void A::doSomething()
 为了实现Pimpl，我们先来看一种普通的类的设计方法。
 假如我们要设计一书籍类Book，Book包含目录属性，并提供打印书籍信息的对外接口，Book设计如下：
 
-```
+``` cpp
 class Book
 {
 public:
@@ -112,7 +112,7 @@ private:
 Book的使用者只需要知道print()接口，便可以使用Book类，看起来一切都很美好。
 然而，当某一天，发现Book需要增加一标题属性，对Book类的修改如下：
 
-```
+``` cpp
 class Book
 {
 public:
@@ -128,7 +128,7 @@ private:
 为了隐藏Book类的实现细节，实现接口与实现的真正分离，可以使用Pimpl方法。
 我们依然对Book类提供相同的接口，但Book类中不再包含原有的数据成员，其所有操作都由BookImpl类实现。
 
-```
+``` cpp
 /* public.h */
 #ifndef PUBLIC_H_INCLUDED
 #define PUBLIC_H_INCLUDED
@@ -152,7 +152,7 @@ private:
 
 BookImpl类的头文件如下。
 
-```
+``` cpp
 /* private.h */
 #ifndef PRIVATE_H_INCLUDED
 #define PRIVATE_H_INCLUDED
@@ -175,7 +175,7 @@ private:
 
 private.h并不需要提供给Book类的使用者，因此，如果往后需要重新设计书籍类的属性，外界对此一无所知，从而保持接口的不变性，并减少了文件之间的编译依赖关系。
 
-```
+``` cpp
 /* book.cpp */
 #include "private.h"  // 我们需要调用BookImpl类的成员函数，
                       // 所以要包含BookImpl的定义头文件
@@ -207,7 +207,7 @@ void Book::BookImpl::print()
 
 使用Book类的接口的方法如下
 
-```
+``` cpp
 /* main.cpp */
 #include "public.h"
  
@@ -229,7 +229,7 @@ int main()
 如果不打算让用户创建对象的副本，那么可以将对象声明为不可复制的。可以将复制构造函数和复制赋值函数声明为私有的，这样在复制或者赋值时就会产生编译错误。
 以下代码通过声明私有的复制构造函数和复制赋值函数来使得对象不可以复制，不需要修改相关的.cpp文件
 
-```
+``` cpp
 /* public.h */
 #ifndef PUBLIC_H_INCLUDED
 #define PUBLIC_H_INCLUDED

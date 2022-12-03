@@ -6,7 +6,7 @@ array<T,N> 模板定义了一种相当于标准数组的容器类型。它是一
 
 array模板类声明如下
 
-```
+``` cpp
 template<class T, size_t N> class array;
 ```
 
@@ -20,7 +20,7 @@ rbegin：返回指向最后一个元素的迭代器
 
 rend：返回指向第一个元素之前的迭代器
 
-```
+``` cpp
 #include<iostream>
 #include<array>
 
@@ -50,7 +50,7 @@ max_size：返回容易可容纳的最大数据
 
 empty：判断容器是否为空
 
-```
+``` cpp
 #include<iostream>
 #include<array>
 
@@ -87,7 +87,7 @@ fill：填充元素
 
 swap：交换容器的元素
 
-```
+``` cpp
 #include<iostream>
 #include<array>
 
@@ -133,7 +133,7 @@ int main()
 
 构建多维数组
 
-```
+``` cpp
 #include<iostream>
 #include<array>
 

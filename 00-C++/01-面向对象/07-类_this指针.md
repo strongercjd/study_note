@@ -4,7 +4,7 @@
 
 示例代码
 
-```
+``` cpp
 #include <iostream>
  
 using namespace std;
@@ -53,7 +53,7 @@ int main(void)
 
 运行结果
 
-```
+``` cpp
 Constructor called.
 Constructor called.
 Box2 is equal to or larger than Box1

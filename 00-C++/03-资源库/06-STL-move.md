@@ -10,7 +10,7 @@
 
 **值传递方式**
 
-```
+``` cpp
 //值传递
 void SetName(std::string name) {
 
@@ -23,7 +23,7 @@ SetName(name);
 
 **引用传递**
 
-```
+``` cpp
 //引用传递
 void SetName(const std::string& name) {
 
@@ -38,7 +38,7 @@ SetName(name);
 
 **无论是哪种传递方式，调用者外部的变量 name 有时候感觉会有一次 "多余的构造和析构"**
 
-```
+``` cpp
 class Apples
 {
 public:
@@ -64,7 +64,7 @@ apple.Add(one);
 
 简单示例
 
-```
+``` cpp
 #include <iostream>
 #include <utility>
 #include <vector>
@@ -86,7 +86,7 @@ int main()
 
 运行结果
 
-```
+``` cpp
 After copy, str is "Hello"
 After move, str is ""
 The contents of the vector are "Hello", "Hello"
@@ -134,7 +134,7 @@ std::move是一个用于提示优化的函数，过去的c++98中，由于无法
 
 std::move 的函数原型定义：
 
-```
+``` cpp
 template <typename T>
 typename remove_reference<T>::type&& move(T&& t)
 {
@@ -148,7 +148,7 @@ typename remove_reference<T>::type&& move(T&& t)
 
 调用的地方使用 std::move 是错误的，std::move没有做任何实质性的操作，仅仅是个强制类型转换而已
 
-```
+``` cpp
 class Apples
 {
 public:
@@ -175,7 +175,7 @@ apple.Add(std::move(one));
 
 改造之后如下
 
-```
+``` cpp
 class Apples
 {
 public:
@@ -201,7 +201,7 @@ apple.Add(std::move(one));
 
 **所以要支持std::move 我们的类也需要提供一些带有右值得函数**
 
-```
+``` cpp
 //转移构造
 Apples(Apples &&other)
 {
@@ -224,7 +224,7 @@ Apples 对象实现了转移构造和转移赋值，所以就可以使用std::mo
 
 不需要自己实现的代码示例:
 
-```
+``` cpp
 class Apples
 {
 public:
@@ -247,7 +247,7 @@ Apples apple2 = std::move(apple1);
 
 需要自己实现的代码示例:
 
-```
+``` cpp
 class Apples
 {
 public:

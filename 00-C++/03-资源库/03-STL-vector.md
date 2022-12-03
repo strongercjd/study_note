@@ -4,7 +4,7 @@
 
 在使用它时, 需要包含头文件vector。
 
-```
+``` cpp
 #include<vector>
 ```
 
@@ -12,7 +12,7 @@
 
 vector 型变量的声明以及初始化的形式也有许多, 常用的有以下几种形式:
 
-```
+``` cpp
 /* 初始化vector对象的方法 */
 vector<T> v1 ;                          //v1是一个空的vector,它潜在的元素是T类型的，执行默认初始化
 vector<T> v2(v1) ;                      //v2中包含v1中所有元素的副本
@@ -26,7 +26,7 @@ vector<T> v6(v5.begin(), v5.begin()+3) ;   //将v5向量中从第0个到第2个(
 
 如果vector的元素类型是int，默认初始化为0；如果vector元素类型为string，则默认初始化为空字符串。除此之外, 还可以直接使用数组来初始化向量,例如 :
 
-```
+``` cpp
 vector<int> v1;               
 vector<father> v2;
 vector<string> v3;            
@@ -48,7 +48,7 @@ vector<int> v11(&n[1], &n[4]) ;//将n[1] - n[4]范围内的元素作为向量v11
 
 元素的输入和访问可以像操作普通的数组那样, 用cin>>进行输入, cout<<a[n] 这样进行输出，示例:
 
-```
+``` cpp
 #include<iostream>
 #include<vector>
 using namespace std ;
@@ -71,21 +71,21 @@ int main()
 
 比如下面的代码是错误的，但是编译器不会报错，就像是数组越界。
 
-```
+``` cpp
 vector<int> vec;     //vec为空
 vec[0] = 1;          //错误！不能给空向量直接赋值，应该用push_back()
 ```
 
 下面这样写是正确的
 
-```
+``` cpp
 vector<int> vec(3);    //vec声明时定义了长度为3，默认vec中有三个元素0
 vec[0] = 1;            //正确！相当于将vec中第0个元素的值0变成1   
 ```
 
 向量元素的位置也是一种数据类型, 在向量中迭代器的类型为: vector<int>::iterator。 迭代器不但表示元素位置, 还可以再容器中前后移动。我们也可以选择使用迭代器(iterator)来访问元素：
 
-```
+``` cpp
 #include <iostream>
 #include <vector>
 #include <string>
@@ -105,7 +105,7 @@ int main()
 
 上面是正向迭代，如果我们想从后往前迭代该如何操作？使用反向迭代器(reverse_iterator)，如下：
 
-```
+``` cpp
 for (vector<string>::reverse_iterator iter = v6.rbegin(); iter != v6.rend(); iter++)
 {
     cout << *iter << endl;   //访问iter所指向的元素
@@ -116,7 +116,7 @@ for (vector<string>::reverse_iterator iter = v6.rbegin(); iter != v6.rend(); ite
 
 基本操作
 
-```
+``` cpp
  v.size()                 //返回向量v中的元素个数
  v.empty()                //若v中不包含任何元素，返回真；否则返回假
  v.push_back(t)           //向v的尾端添加一个值为t的元素
@@ -126,12 +126,11 @@ for (vector<string>::reverse_iterator iter = v6.rbegin(); iter != v6.rend(); ite
  v1 = v2 ;                //将v2中的元素拷贝替换v1中的元素
  v1 = {a,b,c,...}         //用列表中元素拷贝替换v1中的元素
  ==、!=、>、>=、<、<=      //惯有含义，以字典顺序进行比较 ;
-
 ```
 
 添加或删除元素的操作
 
-```
+``` cpp
 push_back()                  //把传送为参数的对象添加到vector的尾部
 pop_back()                   //删除vector尾最后一个元素
 erase()                      //删除一个或多个元素
@@ -147,14 +146,12 @@ insert()                    //插入一个或多个对象
   --vector<int> a(5, 1) ;
     vector<int> b(10) ;
     b.insert(b.begin(), a.begin(), a.end());//将a.begin(), a.end()之间的全部元素插入到b.begin()前
-
 ```
 
 交换
 
-```
+``` cpp
  v2.swap(v1) ;           //v1向量与v2向量进行交换
-
 ```
 
 vector的局限：**但凡使用了迭代器的循环体，都不要向迭代器所属的容器添加元素**！任何一种可能改变vector对象容量的操作，如push_back，都会使迭代器失效。
@@ -173,7 +170,7 @@ push_back和inset的区别：
 
 那么，这两个方法哪个会更快一些呢？
 
-```
+``` cpp
 // test1  向量通过push_back赋值
 int main() {
     int i=100000;
@@ -209,14 +206,13 @@ int main() {
 
 与数组相同, 向量也可以增加维数, 例如声明一个m*n大小的二维向量方式可以像如下形式:
 
-```
+``` cpp
 vector< vector<int> > b(10, vector<int>(5));        //创建一个10*5的int型二维向量
-
 ```
 
 在这里, 实际上创建的是一个向量中元素为向量的向量。同样可以根据一维向量的相关特性对二维向量进行操作, 如：
 
-```
+``` cpp
 #include<iostream>
 #include<vector>
 using namespace std ;
@@ -241,7 +237,6 @@ int main()
  
     return 0;
 }
-
 ```
 
 # 7、向量和数组

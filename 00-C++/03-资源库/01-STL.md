@@ -12,7 +12,7 @@ C++ 标准模板库的核心包括以下三个组件：
 
 下面的程序演示了向量容器（一个 C++ 标准的模板），它与数组十分相似，唯一不同的是，向量在需要扩展大小的时候，会自动处理它自己的存储需求：
 
-```
+``` cpp
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -52,7 +52,7 @@ int main()
 
 运行结果
 
-```
+``` cpp
 vector size = 0
 extended vector size = 5
 value of vec [0] = 0

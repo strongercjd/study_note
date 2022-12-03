@@ -3,7 +3,7 @@ typedef和 using都是给类型起别名,在使用的过程中有什么需要注
 - typedef和 using都是给类型起别名,在使用的过程中有什么需要注意的地方？
 - typedef int pInt;和using pInt = int;时会是什么样
 
-```
+``` cpp
 typedef int* pInt;
 using pInt = int*;
 
@@ -36,12 +36,13 @@ int main()
 
 下面两种定义是等价的
 
-```
+``` cpp
 using DockFuncPtr = void (FinalReturn::*)();
 DockFuncPtr func_ptr = nullptr;
 ```
+等价于
 
-```
+``` cpp
 typedef void (FinalReturn::*DockFuncPtr )();
 DockFuncPtr func_ptr = nullptr;
 ```

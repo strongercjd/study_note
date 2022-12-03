@@ -13,7 +13,7 @@
 
 迭代器使用的示例
 
-```
+``` cpp
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -43,7 +43,7 @@ int main()
 
 使用迭代器修改元素
 
-```
+``` cpp
 void iterator_func()
 {
     string s("some string");
@@ -61,7 +61,7 @@ void iterator_func()
 
 迭代器支持加减运算，支持比较运算
 
-```
+``` cpp
 *iter 返回iter所指对象得引用
 iter->mem 解引用返回iter所指对象得mem成员
 ++iter 迭代器位置后移，指向下一个元素

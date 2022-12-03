@@ -8,13 +8,13 @@ map同set、multiset、multimap（与map的差别仅在于multimap允许一个�
 
 **头文件**
 
-```
+``` cpp
 #include <map>
 ```
 
 **定义**
 
-```
+``` cpp
 map<string,int> my_map;
 /*也可以使用*
 typedef map<string,int> My_Map;
@@ -40,7 +40,7 @@ My_Map my_map;
 
 **第一种：用insert函数插入pair数据：**
 
-```
+``` cpp
 map<int,string> my_map;
 my_map.insert(pair<int,string>(1,"first"));
 my_map.insert(pair<int,string>(2,"second")); 
@@ -48,7 +48,7 @@ my_map.insert(pair<int,string>(2,"second"));
 
 **第二种：用insert函数插入value_type数据：**
 
-```
+``` cpp
 map<int,string> my_map;
 my_map.insert(map<int,string>::value_type(1,"first"));
 my_map.insert(map<int,string>::value_type(2,"second"));
@@ -60,7 +60,7 @@ for(it=my_map.begin();it!=my_map.end();it++)
 
 **第三种：用数组的方式直接赋值：**
 
-```
+``` cpp
 map<int,string> my_map;
 my_map[1]="first";
 my_map[2]="second";
@@ -76,7 +76,7 @@ for(it=my_map.begin();it!=my_map.end();it++)
 
 第一种：用count函数来判断关键字是否出现，其缺点是无法定位元素出现的位置。由于map一对一的映射关系，count函数的返回值要么是0，要么是1。
 
-```
+``` cpp
 map<string,int> my_map;
 my_map["first"]=1;
 cout<<my_map.count("first")<<endl;    //输出1；
@@ -84,7 +84,7 @@ cout<<my_map.count("first")<<endl;    //输出1；
 
 第二种：用find函数来定位元素出现的位置，它返回一个迭代器，当数据出现时，返回的是数据所在位置的迭代器；若map中没有要查找的数据，返回的迭代器等于end函数返回的迭代器。
 
-```
+``` cpp
 #include <map>  
 #include <string>  
 #include <iostream>  
@@ -112,7 +112,7 @@ int main()
 
 示例代码如下
 
-```
+``` cpp
 #include <map>  
 #include <string>  
 #include <iostream>  
@@ -144,7 +144,7 @@ int main()
 
 map中元素是自动按key升序排序（从小到大）的；按照value排序时，想直接使用sort函数是做不到的，sort函数只支持数组、vector、list、queue等的排序，无法对map排序，那么就需要把map放在vector中，再对vector进行排序。
 
-```
+``` cpp
 #include <iostream>
 #include <string>
 #include <map>

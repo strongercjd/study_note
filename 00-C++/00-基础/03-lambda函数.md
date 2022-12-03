@@ -2,7 +2,7 @@
 
 lambda函数示例
 
-```
+``` cpp
 #include <iostream>
 
 int main()
@@ -23,7 +23,7 @@ int main()
 
 通常情况下，lambda函数的语法定义如下：
 
-```
+``` cpp
 [capture](parameters) mutable -> return-type{statement}
 ```
 
@@ -35,7 +35,7 @@ int main()
 
 lambda函数的各种形式
 
-```
+``` cpp
 int main()
 {
     int a = 1;
@@ -52,7 +52,7 @@ int main()
 
 通过上面的代码可以发现，起始lambda函数和普通函数之间最特殊的地方就是，lambda函数可以捕捉上下文的数据进行使用。我们用捕捉的方式来完成最开始的例子：
 
-```
+``` cpp
 int main()
 {
     int a = 1;
@@ -86,7 +86,7 @@ int main()
 
 有时候，我们需要对一个方法中的变量进行状态监控，且在这个方法中会多次调用。往往我们会封装一个函数去做这件事情，但是实际上其他的地方又用不到这个函数，如果用lambda函数来做这件事，可以使代码更加易读：
 
-```
+``` cpp
 #include <iostream>
 
 int main(void)
@@ -114,7 +114,7 @@ int main(void)
 
 lambda捕捉列表的捕捉方式不同，结果也会不同。值传递的方式其值在传递的时候就已经决定了，而引用的方式则等于lambda函数调用的时候的值。
 
-```
+``` cpp
 #include <iostream>
 
 int main()
@@ -140,7 +140,7 @@ int main()
 
 在最开始，lambda函数的类型看起来和函数指针的很像，都是把函数赋值给了一个变量。后来了解到lambda函数是用仿函数实现的，又认为它是一种自定义的类。而事实上，lambda类型并不是简单的函数指针类型或者自定义类型。lambda函数是一个闭包(closure，特有的、匿名的且非联合体的class类型)的类，没有lambda表达式都会产生一个闭包类型的临时对象(右值)。因此，严格来说lambda函数并非函数指针，但是C++11允许lambda表达式向函数指针的转换，前提是没有捕捉任何变量且函数指针所指向的函数必须跟lambda函数有相同的调用方式：
 
-```
+``` cpp
 typedef int(*pfunc)(int x, int y);
 
 int main()
@@ -159,7 +159,7 @@ int main()
 
 # 4、常量性和mutable关键字
 
-```
+``` cpp
 int main()
 {
     int val = 0;
@@ -182,7 +182,7 @@ int main()
 
 lambda对于C++最大的改变音轨是在STL库中，它使得STL的算法使用更加容易。首先我们看一下for_each算法：
 
-```
+``` cpp
 int s = 0;
 inline void sum(int i)
 {
@@ -203,7 +203,6 @@ int main()
 
     return 0;
 }
-
 ```
 
 可以看到，原来使用for_each算法需要定义一个函数来作为参数进行计算。用了lambda之后，代码结构更加清晰和简单。不过，针对这个例子使用C++11中的for循环更加方便，但是如果循环中的算法更加复杂，可能用lambda+for_each会比较好。
