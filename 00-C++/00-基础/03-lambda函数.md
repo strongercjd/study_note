@@ -206,3 +206,41 @@ int main()
 ```
 
 可以看到，原来使用for_each算法需要定义一个函数来作为参数进行计算。用了lambda之后，代码结构更加清晰和简单。不过，针对这个例子使用C++11中的for循环更加方便，但是如果循环中的算法更加复杂，可能用lambda+for_each会比较好。
+
+# 6.举例
+cartographer中的代码
+``` cpp
+/**
+ * @brief 在node_handle中订阅topic,并与传入的回调函数进行注册
+ *
+ * @tparam MessageType 模板参数,消息的数据类型
+ * @param[in] handler 函数指针, 接受传入的函数的地址
+ * @param[in] trajectory_id 轨迹id
+ * @param[in] topic 订阅的topic名字
+ * @param[in] node_handle ros的node_handle
+ * @param[in] node node类的指针
+ * @return ::ros::Subscriber 订阅者
+ */
+template <typename MessageType>
+::ros::Subscriber SubscribeWithHandler(
+    void (Node::*handler)(int, const std::string&,
+                          const typename MessageType::ConstPtr&),
+    const int trajectory_id, const std::string& topic,
+    ::ros::NodeHandle* const node_handle, Node* const node) {
+  return node_handle->subscribe<MessageType>(
+      topic, kInfiniteSubscriberQueueSize,  // kInfiniteSubscriberQueueSize = 0
+      // 使用boost::function构造回调函数,被subscribe注册
+      boost::function<void(const typename MessageType::ConstPtr&)>(
+          // c++11: lambda表达式
+          [node, handler, trajectory_id,
+           topic](const typename MessageType::ConstPtr& msg) {
+            (node->*handler)(trajectory_id, topic, msg);
+          }));
+}
+```
+调用方式举例
+``` cpp
+SubscribeWithHandler<sensor_msgs::LaserScan>(
+             &Node::HandleLaserScanMessage, trajectory_id, topic, &node_handle_,
+             this)
+```
