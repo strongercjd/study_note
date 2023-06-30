@@ -32,16 +32,14 @@ struct mycomp
 { // 自定义比较函数，重载“（）”操作符
     bool operator()(const int &a, const int &b)
     {
-        if (a != b)
-            return a > b;
-        else
-            return a > b;
+        return a > b;
     }
 };
 int main()
 {
     set<int, mycomp> s; // 采用比较函数mycomp
     s.insert(5);        // 第一次插入5，可以插入
+
     s.insert(1);
     s.insert(6);
     s.insert(3);
