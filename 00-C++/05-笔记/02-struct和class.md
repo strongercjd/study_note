@@ -27,7 +27,7 @@ struct A
 
 1.默认的继承访问权。class默认的是private,strcut默认的是public。
 
-2.默认的继承访问权。class默认的是private,strcut默认的是public。
+2.class中默认的成员访问权限是private的，而struct中则是public的
 
 
 
