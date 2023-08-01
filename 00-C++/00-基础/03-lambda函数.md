@@ -112,7 +112,9 @@ int main(void)
 
 # 3、捕获方式
 
-lambda捕捉列表的捕捉方式不同，结果也会不同。值传递的方式其值在传递的时候就已经决定了，而引用的方式则等于lambda函数调用的时候的值。
+lambda捕捉列表的捕捉方式不同，结果也会不同。
+- 引用捕获
+- 赋值捕获
 
 ``` cpp
 #include <iostream>
@@ -120,25 +122,58 @@ lambda捕捉列表的捕捉方式不同，结果也会不同。值传递的方�
 int main()
 {
     int i = 1;
-    auto func1 = [=] {std::cout << i << std::endl; };
-    auto func2 = [&] {std::cout << i << std::endl; };
-
-    func1();             // 1
-    func2();             // 1
-
-    ++i;
-
-    func1();             // 1，值传递方式结果不变
-    func2();             // 2, 引用的方式受++i的影响
+    auto func1 = [=] {i++; std::cout << i << std::endl; };//赋值捕获
 
     return 0;
 }
+```
+编译报错如下
+``` cpp
+$ g++  demo.cpp 
+demo.cpp: In lambda function:
+demo.cpp:6:23: error: increment of read-only variable ‘i’
+    6 |     auto func1 = [=] {i++; std::cout << i << std::endl; };//赋值捕获
+```
+说明赋值捕获时，i是只读的，不能被写入，下文有提到，可以使用mutable解决这个问题
 
+
+``` cpp
+#include <iostream>
+
+int main()
+{
+    int i = 1;
+    auto func1 = [=]
+    { std::cout << "赋值捕获:" << i << std::endl; }; // 赋值捕获
+    auto func2 = [&]
+    { std::cout << "引用捕获:" << i++ << std::endl; }; // 引用捕获
+
+    func1(); // 1
+    std::cout << "赋值捕获后" << i << std::endl;
+    func2(); // 1
+    std::cout << "引用捕获后" << i << std::endl;
+
+    return 0;
+}
+```
+运行结果
+``` cpp
+$ ./a.out 
+赋值捕获:1
+赋值捕获后1
+引用捕获:1
+引用捕获后2
 ```
 
-# 4、类型
+# 4、很函数指针对比
 
-在最开始，lambda函数的类型看起来和函数指针的很像，都是把函数赋值给了一个变量。后来了解到lambda函数是用仿函数实现的，又认为它是一种自定义的类。而事实上，lambda类型并不是简单的函数指针类型或者自定义类型。lambda函数是一个闭包(closure，特有的、匿名的且非联合体的class类型)的类，没有lambda表达式都会产生一个闭包类型的临时对象(右值)。因此，严格来说lambda函数并非函数指针，但是C++11允许lambda表达式向函数指针的转换，前提是没有捕捉任何变量且函数指针所指向的函数必须跟lambda函数有相同的调用方式：
+在最开始，lambda函数的类型看起来和函数指针的很像，都是把函数赋值给了一个变量。
+
+后来了解到lambda函数是用仿函数实现的，又认为它是一种自定义的类。
+
+而事实上，lambda类型并不是简单的函数指针类型或者自定义类型。lambda函数是一个闭包(closure，特有的、匿名的且非联合体的class类型)的类，没有lambda表达式都会产生一个闭包类型的临时对象(右值)。
+
+因此，严格来说lambda函数并非函数指针，但是C++11允许lambda表达式向函数指针的转换，前提是没有捕捉任何变量且函数指针所指向的函数必须跟lambda函数有相同的调用方式：
 
 ``` cpp
 typedef int(*pfunc)(int x, int y);
@@ -155,6 +190,51 @@ int main()
 
     return 0;
 }
+```
+
+函数指针和Lambda函数
+``` cpp
+#include <iostream>
+#include <functional>
+
+void printff(int input)
+{
+    std::cout << "printff " << input << '\n';
+    return;
+}
+
+void function_tmp(void ptr(int))
+{
+    ptr(1);
+}
+void function_lambda(std::function<void(int)> ptr)
+{
+    ptr(2);
+}
+
+int main()
+{
+    int data = 10;
+    function_tmp(printff);
+
+    function_tmp([](int puter)
+                 { std::cout << "puter " << puter << '\n'; });
+
+    /* 错误的，当lambda函数有捕获时，必须使用function_lambda */
+    // function_tmp([=](int puter)
+    //              { std::cout << "data " << data << "  puter " << puter << '\n'; });
+
+    function_lambda([=](int puter)
+                    { std::cout << "data " << data << "  puter " << puter << '\n'; });
+    return 0;
+}
+```
+运行结果
+``` cpp
+$ ./a.out 
+printff 1
+puter 1
+data 10  puter 2
 ```
 
 # 4、常量性和mutable关键字
@@ -243,4 +323,254 @@ template <typename MessageType>
 SubscribeWithHandler<sensor_msgs::LaserScan>(
              &Node::HandleLaserScanMessage, trajectory_id, topic, &node_handle_,
              this)
+```
+
+# 8.编译
+
+lambda函数实际被编译成编译成**可执行的类**
+
+下面是一个典型的生产者和消费者模式
+``` cpp
+#include <iostream>
+#include <thread>
+#include <queue>
+#include <chrono>
+#include <mutex>
+#include <condition_variable>
+/* conditional variable queue  条件变量队列
+条件变量是一种线程间的同步机制，用于满足特定条件之前使线程等待
+它通常与互斥锁(mutex)一起使用，在多线程编成中实现线程间同步与协调*/
+class condvarQueue
+{
+    std::queue<int> produced_nums;
+    std::mutex m;
+    std::condition_variable cond_var;
+    bool done = false; // 是否结束
+    bool notified = false;
+
+public:
+    void push(int i)
+    {
+        std::unique_lock<std::mutex> lock(m);
+        produced_nums.push(i);
+        notified = true;
+        cond_var.notify_one();
+    }
+    // 消费者
+    template <typename Consumer>
+    void consume(Consumer consumer)
+    {
+        std::unique_lock<std::mutex> lock(m);
+        while (!done)
+        {
+            while (!notified) // 使用notified条件循环避免假的唤醒
+            {
+                cond_var.wait(lock);
+            }
+            while (!produced_nums.empty())
+            {
+                consumer(produced_nums.front());
+                produced_nums.pop();
+            }
+            notified = false;
+        }
+    }
+
+    void close()
+    {
+        {
+            std::lock_guard<std::mutex> lock(m);
+            done = true;
+            notified = true;
+        }
+        cond_var.notify_one();
+    }
+};
+
+int main()
+{
+    condvarQueue queue;
+    // 生产者线程
+    std::thread producer([&]()
+                         {
+        for (int i = 0; i < 5; ++i) {
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+            std::cout << "producing " << i << '\n';
+            queue.push(i);
+        }
+        queue.close(); });
+
+    // 消费者线程
+    std::thread consumer([&]()
+                         { queue.consume([](int input)
+                                         { std::cout << "consuming " << input << '\n'; }); });
+
+    producer.join();
+    consumer.join();
+}
+```
+那么我们就来研究生产者的lambda函数
+``` cpp
+std::thread producer([&]()
+                        {
+    for (int i = 0; i < 5; ++i) {
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        std::cout << "producing " << i << '\n';
+        queue.push(i);
+    }
+    queue.close(); });
+```
+lambda函数被编译器编译成如下可执行的类
+``` cpp
+class producer_lambda
+{
+public:
+    producer_lambda(condvarQueue &queue) : _queue(queue){};
+    ~producer_lambda(){};
+
+    void operator()()
+    {
+        for (int i = 0; i < 5; ++i)
+        {
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+            std::cout << "producing " << i << '\n';
+            _queue.push(i);
+        }
+        _queue.close();
+    }
+
+private:
+    condvarQueue &_queue;
+};
+```
+因为condvarQueue &_queue;是引用，所以[&]
+
+那么上述完整的生产者和消费者模式修改如下
+``` cpp
+#include <iostream>
+#include <thread>
+#include <queue>
+#include <chrono>
+#include <mutex>
+#include <condition_variable>
+/* conditional variable queue  条件变量队列
+条件变量是一种线程间的同步机制，用于满足特定条件之前使线程等待
+它通常与互斥锁(mutex)一起使用，在多线程编成中实现线程间同步与协调*/
+class condvarQueue
+{
+    std::queue<int> produced_nums;
+    std::mutex m;
+    std::condition_variable cond_var;
+    bool done = false; // 是否结束
+    bool notified = false;
+
+public:
+    void push(int i)
+    {
+        std::unique_lock<std::mutex> lock(m);
+        produced_nums.push(i);
+        notified = true;
+        cond_var.notify_one();
+    }
+    // 消费者
+    template <typename Consumer>
+    void consume(Consumer consumer)
+    {
+        std::unique_lock<std::mutex> lock(m);
+        while (!done)
+        {
+            while (!notified) // 使用notified条件循环避免假的唤醒
+            {
+                cond_var.wait(lock);
+            }
+            while (!produced_nums.empty())
+            {
+                consumer(produced_nums.front());
+                produced_nums.pop();
+            }
+            notified = false;
+        }
+    }
+
+    void close()
+    {
+        {
+            std::lock_guard<std::mutex> lock(m);
+            done = true;
+            notified = true;
+        }
+        cond_var.notify_one();
+    }
+};
+class producer_lambda
+{
+public:
+    producer_lambda(condvarQueue &queue) : _queue(queue){};
+    ~producer_lambda(){};
+
+    void operator()()
+    {
+        for (int i = 0; i < 5; ++i)
+        {
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+            std::cout << "producing " << i << '\n';
+            _queue.push(i);
+        }
+        _queue.close();
+    }
+
+private:
+    condvarQueue &_queue;
+};
+int main()
+{
+    condvarQueue queue;
+    // 生产者线程
+    producer_lambda _producer(queue);
+    std::thread producer(_producer);
+
+    // 消费者线程
+    std::thread consumer([&]()
+                         { queue.consume([](int input)
+                                         { std::cout << "consuming " << input << '\n'; }); });
+
+    producer.join();
+    consumer.join();
+    return 0;
+}
+```
+运行结果是一样的
+
+消费者lambda函数，这是两个lambda函数
+``` cpp
+std::thread consumer([&]()
+                        { queue.consume([](int input)
+                                        { std::cout << "consuming " << input << '\n'; }); });
+```
+其中第2个lambda函数是
+``` cpp
+[](int input)
+   { std::cout << "consuming " << input << '\n'; }
+```
+而queue.consume是一个函数模板，传入的是一个类
+``` cpp
+template <typename Consumer>
+void consume(Consumer consumer)
+{
+    std::unique_lock<std::mutex> lock(m);
+    while (!done)
+    {
+        while (!notified) // 使用notified条件循环避免假的唤醒
+        {
+            cond_var.wait(lock);
+        }
+        while (!produced_nums.empty())
+        {
+            /* 传入的lambda函数是这里执行的，因为传入的是可执行的类 */
+            consumer(produced_nums.front());
+            produced_nums.pop();
+        }
+        notified = false;
+    }
+}
 ```
