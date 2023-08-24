@@ -39,6 +39,16 @@ const int *e = &a;// const 修饰的是*e,所以和int const *c = &a;是一样�
 const double pi =3.14;
 const double *const pip = &pi;// pip是一个指向常量对象的常量指针
 ```
+
+这里有常量指针和指针常量的区别
+``` cpp
+int const *c = &a;//常量指针
+int *const d = &b;//指针常量
+```
+他们俩快速区别：谁在前谁不能被修改。
+- 常量指针，常量不能被修改
+- 指针常量，指针不能被修改
+
 # const的引用
 
 可以把引用绑定到const对象上，就像绑定到其他对象上一样，我们称之为**对常量的引用(reference to const)**,与普通引用不同的是，对常量的应用不能被用作修改它所绑定的对象
