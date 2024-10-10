@@ -22,6 +22,8 @@
 
 # UML 类图
 
+统一建模语言(Unified Modeling Language，UML)是一种为面向对象系统的产品进行说明、可视化和编制文档的一种标准语言，是非专利的第三代建模和规约语言
+
  mermaid是一种JavaScript库, 可以用于生成流程图、序列图、甘特图等各种图表。由于其简单易用、功能强大,越来越多的人开始使用它来创建图表。
 
  在vscode中使用 Markdown Preview Mermaid Support 插件在markdown中直接写代码生成图表
@@ -94,14 +96,29 @@ classDiagram
     ```
 
 类的关系图
+
+他们之间的关系
+![类关系图](design_patterns.png "类关系图")
+- 依赖关系：表示一个对象依赖于另一个对象，A 依赖于 B,B 的改变必将影响到 A。
+- 关联关系：对象A关联对象B。
+- 聚合关系：对象A由对对象B组成，对象B的生命周期不是A的生命周期。
+- 组合关系：对象A由对象B组成，对象B的生命周期是A的生命周期。
+    >关联说明A和B有关系，更进一步是聚合关系，也就是A拥有B，但是B可以独立存在。再进一步是组合关系，也就是A和B是紧密的，A和B的生命周期是A的生命周期。关于生命周期理解：鸡腿和鸡的关系就是组合关系，鸡死了，鸡腿也死了，鸡腿的生命周期是受鸡的影响的。
+- 实现关系：类A定义的方法由接口B声明。
+- 继承关系：类A继承类B的接口和实现，但是可以对其进行扩展。
+
+> 除学术要求，一般不会有这么详细的关系。依赖和关联不用分的那么清楚，只需要指导A和B是有关系的，A依赖B。聚合和组合，只需要指导是has a的关系，也就是A包含B。实现和继承，只需要知道是is a的关系，也就是A是B。
+
+
+**使用UML符号来表示关系**
 ```mermaid
  classDiagram
- classA --|> classB : 继承
- classC --* classD : 组合
- classE --o classF : 聚合
- classG --> classH : 关联
  classK ..> classL : 依赖
+ classG --> classH : 关联
+ classE --o classF : 聚合
+ classC --* classD : 组合
  classM ..|> classN : 实现
+ classA --|> classB : 继承
 ```
 
 综合示例
