@@ -19,3 +19,118 @@
 
 # 设计模式书籍
 《Head First 设计模式》
+
+# UML 类图
+
+ mermaid是一种JavaScript库, 可以用于生成流程图、序列图、甘特图等各种图表。由于其简单易用、功能强大,越来越多的人开始使用它来创建图表。
+
+ 在vscode中使用 Markdown Preview Mermaid Support 插件在markdown中直接写代码生成图表
+
+ 
+| 关键字 | 定义 | 
+| --- | --- | 
+| classDiagram	| 定义类图| 
+| class{}	| 定义一个类，属性和方法写在{}内，如无内容，则不写{}| 
+| +	| 权限：公共| 
+| -	| 权限：私有| 
+| #	| 权限：保护| 
+| ~	| 权限：包 / 内部| 
+| $	| 静态| 
+ 
+示例如下
+类属性与方法
+- 类：格式：class 类名{} ，如果类内容为空，则省略{}。比如class Object、class Person{}
+- 属性： 格式：权限 类型 属性名，比如- String name
+- 方法：格式：权限 方法名(参数类型) 返回值类型 ，比如+ goSchool(Bus) boolean
+
+ 示例如下
+```mermaid
+classDiagram
+class Student{
+    - String name 
+    %% 这是一个注释，解析器自动忽略
+    + int age
+    + goSchool(Bus) boolean
+    - goHome() String
+    # doHomework() Object[]
+    ~ examine() List~string~
+}
+```
+也可以如下简洁写法，这个简洁的写法在一些编辑器上面无法显示注释，比如typora就不显示
+```mermaid
+classDiagram
+    Student : - String name 
+    Student : + int age
+    Student: + goSchool(Bus) boolean
+    Student: - goHome() String
+```
+
+**类的注解**
+
+类的注解作为特殊标记包括：
+-  &lt;&lt;interface &gt;&gt; 接口
+- &lt;&lt;abstract&gt;&gt;  抽象类
+- &lt;&lt;service&gt;&gt; 服务等级
+- &lt;&lt;enumeration&gt;&gt; 枚举
+
+这种特殊标记可以有两种表现形式
+1. 在类名后直接写
+    ```mermaid
+    classDiagram
+    class ICourse{
+        + String name	
+        + select() Boolean 
+    }
+    <<interface>> ICourse
+    ```
+2. 与类一起定义在嵌套结构中
+    ```mermaid
+    classDiagram
+    class Gender{
+        <<enumeration>>
+        MALE
+        FEMALE
+    }
+    ```
+
+类的关系图
+```mermaid
+ classDiagram
+ classA --|> classB : 继承
+ classC --* classD : 组合
+ classE --o classF : 聚合
+ classG --> classH : 关联
+ classK ..> classL : 依赖
+ classM ..|> classN : 实现
+```
+
+综合示例
+```mermaid
+classDiagram
+    %%鸭子
+    Duck --|> Animal  :继承
+    Fish --|> Animal  :继承
+    %%斑马
+    Zebra --|> Animal  :继承
+
+    class Animal{
+        +int age
+        +String gender
+        +swim()
+        +isMammal()
+        +mate()
+    }
+    class Duck{
+        +String beakColor
+        +swim()
+        +quack()
+    }
+    class Fish{
+        -int sizeInFeet
+        -canEat()
+    }
+    class Zebra{
+        +bool is_wild
+        +run()
+    }
+```
