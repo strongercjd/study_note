@@ -98,7 +98,9 @@ classDiagram
 类的关系图
 
 他们之间的关系
-![类关系图](design_patterns.png "类关系图")
+
+![类关系图](design_patterns.drawio.png "类关系图")
+
 - 依赖关系：表示一个对象依赖于另一个对象，A 依赖于 B,B 的改变必将影响到 A。
 - 关联关系：对象A关联对象B。
 - 聚合关系：对象A由对对象B组成，对象B的生命周期不是A的生命周期。
@@ -121,6 +123,35 @@ classDiagram
  classA --|> classB : 继承
 ```
 
+支持分类
+```mermaid
+classDiagram
+namespace BaseShapes {
+    class Triangle
+    class Rectangle {
+      double width
+      double height
+    }
+}
+```
+
+添加note
+```mermaid
+classDiagram
+    note "This is a general note"
+    note for MyClass "This is a note for a class"
+    class MyClass{
+    }
+```
+设置图表方向
+```mermaid
+classDiagram
+direction RL
+    note "This is a general note"
+    note for MyClass "This is a note for a class"
+    class MyClass{
+    }
+```
 综合示例
 ```mermaid
 classDiagram
@@ -134,7 +165,7 @@ classDiagram
         +int age
         +String gender
         +swim()
-        +isMammal()
+        +isMammal() bool
         +mate()
     }
     class Duck{
