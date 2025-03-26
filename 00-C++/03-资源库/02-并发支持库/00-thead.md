@@ -1,5 +1,13 @@
 # 基本的用法
 
+C++ 11 之后添加了新的标准线程库 **std::thread**，**std::thread** **在 <thread>** 头文件中声明，因此使用 **std::thread** 时需要包含 **在 <thread>** 头文件。
+
+之前一些编译器使用 C++ 11 的编译参数是 **-std=c++11**:
+
+``` cpp
+g++ -std=c++11 test.cpp 
+```
+
 最简单的 std::thread 范例如下所示，调用 thread 将立即同时开始执行这个新建立的线程，之后 main() 的主线程也会继续执行，基本上这就是一个基本的建立多线程的功能
 ``` cpp
 #include <iostream>
@@ -36,6 +44,14 @@ demo.cpp:(.text._ZNSt6threadC2IRFvvEJEvEEOT_DpOT0_[_ZNSt6threadC5IRFvvEJEvEEOT_D
 collect2: error: ld returned 1 exit status
 ```
 这个错误时由于链接错误引起的，需要在编译时链接多线程库(pthread),在操作系统中，线程由pthread库实现的，为了解决这个问题，需要在编译时添加"-pthread"选项
+``` cpp
+$ g++ -pthread demo.cpp 
+```
+>以上是在ubuntu20.04编译的结果。ubuntu22.04就不需要需要添加"-pthread"选项，具体看readme.md
+
+> **为确保跨平台兼容性，​始终显式添加-pthread选项是最稳妥的做法**
+
+编译运行结果
 ``` cpp
 $ g++ -pthread demo.cpp 
 $ ./a.out 
