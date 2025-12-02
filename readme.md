@@ -1,4 +1,8 @@
 
+C++ [[C++]]
+git [[git]]
+cmake [[cmake]]
+
 # git 管理
 
 .gitignore 忽略以下文件，下面文件表示当前打开了那些笔记
