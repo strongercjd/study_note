@@ -2,6 +2,8 @@
 C++ [[C++]]
 git [[git]]
 cmake [[cmake]]
+linux [[linux]]
+deebot [[deebot]]
 
 # git 管理
 
