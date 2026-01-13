@@ -5,6 +5,7 @@ git [[git]]
 cmake [[cmake]]
 linux [[linux]]
 deebot [[deebot]]
+docker [[docker]]
 
 # git 管理
 
