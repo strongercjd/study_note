@@ -3,7 +3,8 @@
 C++ [[C++]]
 git [[git]]
 cmake [[cmake]]
-linux [[linux]]
+linux使用 [[linux使用]]
+linux编程 [[linux编程]]
 deebot [[deebot]]
 docker [[docker]]
 
