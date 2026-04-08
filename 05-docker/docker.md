@@ -23,7 +23,7 @@ sudo docker rmi ubuntu:latest
 
 ```bash
 # 停止容器
-sduo ocker stop <容器ID>
+sudo docker stop <容器ID>
 # 删除容器
 sudo docker rm <容器ID>
 # 再删除镜像
@@ -70,6 +70,8 @@ b87a3469bbbe   ubuntu:latest   "/bin/bash"   10 seconds ago   Up 9 seconds      
 sudo docker run -itd --name my-ubuntu -v /home/chenjd/code:/home/ubuntu/code ubuntu:latest
 ```
 
+
+
 进入容器终端
 
 ``` bash
@@ -77,4 +79,13 @@ $ sudo docker exec -it my-ubuntu /bin/bash
 root@b87a3469bbbe:/#
 ```
 
+## 相关配置
 
+### 修改时区
+
+修改容器中的时区，重启丢失
+
+```bash
+ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+echo "Asia/Shanghai" > /etc/timezone
+```
