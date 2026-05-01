@@ -30,7 +30,6 @@ sudo docker rm <容器ID>
 sudo docker rmi <镜像ID>
 ```
 
-
 打包镜像
 
 ```bash
@@ -43,15 +42,11 @@ sudo docker save -o docker_ubuntu1604_image.tar ubuntu:16.04
 sudo docker load -i docker_ubuntu1604_image.tar
 ```
 
-
-
 ## 容器操作
 
-查看docker运行的容器
+查看运行的容器 `sudo docker ps`
 
-``` bash
-sudo docker ps
-```
+查看所有容器 `sudo docker ps -a`
 
 基于镜像启动一个容器
 
@@ -69,8 +64,6 @@ b87a3469bbbe   ubuntu:latest   "/bin/bash"   10 seconds ago   Up 9 seconds      
 ``` bash
 sudo docker run -itd --name my-ubuntu -v /home/chenjd/code:/home/ubuntu/code ubuntu:latest
 ```
-
-
 
 进入容器终端
 
