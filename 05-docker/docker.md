@@ -32,6 +32,12 @@ sudo docker rmi <镜像ID>
 
 打包镜像
 
+先提交当前容器的修改为镜像
+```bash
+sudo docker commit -m "已完成业务配置" 容器B_ID 镜像C:v1
+```
+
+导出镜像
 ```bash
 sudo docker save -o docker_ubuntu1604_image.tar ubuntu:16.04
 ```
